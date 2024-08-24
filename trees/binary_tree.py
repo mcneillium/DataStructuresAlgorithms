@@ -7,41 +7,38 @@ class Node:
         self.right = None
         self.val = key
 
-# This function performs an inorder traversal of the binary tree.
-# Inorder traversal visits the left subtree, the root node, and then the right subtree.
-def inorder_traversal(root):
-    if root:
-        inorder_traversal(root.left)   # Recursively visit the left subtree.
-        print(root.val, end=' ')       # Print the root node's value.
-        inorder_traversal(root.right)  # Recursively visit the right subtree.
+# This BinaryTree class provides a structure to manage the binary tree operations.
+class BinaryTree:
+    def __init__(self):
+        # Initialize the root of the binary tree as None.
+        self.root = None
 
-# This function inserts a new node with a specified key into the binary tree.
-# It maintains the binary search tree property, where left children are less than the parent, and right children are greater.
-def insert(root, key):
-    # If the tree is empty, return a new node as the root.
-    if root is None:
-        return Node(key)
-    else:
-        # If the key is greater than the root's value, insert it into the right subtree.
-        if root.val < key:
-            root.right = insert(root.right, key)
-        # If the key is less than or equal to the root's value, insert it into the left subtree.
+    # This method inserts a new node with a specified key into the binary tree.
+    def insert(self, key):
+        # Use the helper function to insert into the tree.
+        if self.root is None:
+            self.root = Node(key)
         else:
-            root.left = insert(root.left, key)
-    return root
+            self._insert(self.root, key)
 
-# Example usage:
-if __name__ == "__main__":
-    # Create the root of the binary tree with value 50.
-    r = Node(50)
-    # Insert nodes into the binary tree.
-    r = insert(r, 30)
-    r = insert(r, 20)
-    r = insert(r, 40)
-    r = insert(r, 70)
-    r = insert(r, 60)
-    r = insert(r, 80)
+    def _insert(self, root, key):
+        if root is None:
+            return Node(key)
+        else:
+            if root.val < key:
+                root.right = self._insert(root.right, key)
+            else:
+                root.left = self._insert(root.left, key)
+        return root
 
-    # Print the inorder traversal of the binary tree.
-    print("Inorder traversal of the binary tree:")
-    inorder_traversal(r)
+    # This method performs an inorder traversal of the binary tree.
+    def inorder_traversal(self):
+        result = []
+        self._inorder_traversal(self.root, result)
+        return result
+
+    def _inorder_traversal(self, root, result):
+        if root:
+            self._inorder_traversal(root.left, result)
+            result.append(root.val)
+            self._inorder_traversal(root.right, result)
