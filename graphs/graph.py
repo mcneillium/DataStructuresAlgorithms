@@ -1,35 +1,34 @@
-from collections import defaultdict
+from collections import defaultdict, deque
+
 
 class Graph:
+    """Directed graph stored as an adjacency list."""
+
     def __init__(self):
-        # Initialize an empty default dictionary to store the adjacency list.
-        # Each key in the dictionary is a vertex, and the corresponding value is a list of adjacent vertices.
+        # Each key is a vertex; its value is the list of vertices it points to.
         self.graph = defaultdict(list)
 
     def add_edge(self, u, v):
-        # Always ensure the adjacency list for node u is initialized and append v
+        """Add an edge from u to v."""
         self.graph[u].append(v)
 
     def bfs(self, start):
-        # Create a list to keep track of visited vertices, initialized to False.
-        visited = [False] * (max(self.graph) + 1)
-        queue = []  # Initialize an empty queue for BFS.
+        """Return vertices in breadth-first order from start.
+
+        Uses a set for visited vertices, so it works for any hashable vertex
+        (not only small integers) and for vertices that only appear as the
+        target of an edge. A deque gives O(1) dequeues.
+        """
+        visited = {start}
+        queue = deque([start])
         traversal_order = []
 
-        # Mark the start vertex as visited and enqueue it.
-        queue.append(start)
-        visited[start] = True
-
         while queue:
-            # Dequeue a vertex from the queue and add it to the traversal order
-            node = queue.pop(0)
+            node = queue.popleft()
             traversal_order.append(node)
-
-            # Get all adjacent vertices of the dequeued vertex.
-            # If an adjacent vertex hasn't been visited, mark it visited and enqueue it.
-            for i in self.graph[node]:
-                if not visited[i]:
-                    queue.append(i)
-                    visited[i] = True
+            for neighbour in self.graph.get(node, []):
+                if neighbour not in visited:
+                    visited.add(neighbour)
+                    queue.append(neighbour)
 
         return traversal_order

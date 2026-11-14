@@ -133,9 +133,8 @@ class DataStructuresDemo:
 
     def display_hash_table(self):
         self.ht_display.delete(1.0, tk.END)
-        for index, value in enumerate(self.hash_table.arr):
-            if value is not None:
-                self.ht_display.insert(tk.END, f"Index {index}: {value}\n")
+        for index, key, value in self.hash_table.items():
+            self.ht_display.insert(tk.END, f"Index {index}: {key} -> {value}\n")
 
     def clear_hash_table(self):
         self.hash_table = HashTable()  # Reset the hash table

@@ -1,41 +1,56 @@
-# The HashTable class implements a simple hash table using an array and a basic hashing function.
 class HashTable:
-    def __init__(self):
-        # Initialize the hash table with a fixed size array (100 elements).
-        self.MAX = 100
-        self.arr = [None for _ in range(self.MAX)]
+    """A simple hash table with separate chaining.
 
-    # This method computes a hash value for a given key.
-    # The hash function sums the ASCII values of the characters in the key and takes the modulus with the array size.
+    Each of the MAX slots holds a list (bucket) of (key, value) pairs, so two
+    keys whose hashes collide (for example "ab" and "ba") are both kept.
+    """
+
+    def __init__(self, size=100):
+        self.MAX = size
+        self.arr = [[] for _ in range(self.MAX)]
+
     def get_hash(self, key):
+        """Sum of the characters' code points, modulo the table size."""
         h = 0
-        for char in key:
+        for char in str(key):
             h += ord(char)
         return h % self.MAX
 
-    # This method allows setting a key-value pair in the hash table.
     def __setitem__(self, key, value):
-        h = self.get_hash(key)
-        self.arr[h] = value
+        bucket = self.arr[self.get_hash(key)]
+        for i, (k, _) in enumerate(bucket):
+            if k == key:
+                bucket[i] = (key, value)  # update an existing key
+                return
+        bucket.append((key, value))
 
-    # This method allows retrieving a value from the hash table by its key.
     def __getitem__(self, key):
-        h = self.get_hash(key)
-        return self.arr[h]
+        for k, v in self.arr[self.get_hash(key)]:
+            if k == key:
+                return v
+        raise KeyError(key)
 
-    # This method allows deleting a key-value pair from the hash table by setting its slot to None.
     def __delitem__(self, key):
-        h = self.get_hash(key)
-        self.arr[h] = None
+        bucket = self.arr[self.get_hash(key)]
+        for i, (k, _) in enumerate(bucket):
+            if k == key:
+                del bucket[i]
+                return
+        raise KeyError(key)
 
-# Example usage:
+    def __contains__(self, key):
+        return any(k == key for k, _ in self.arr[self.get_hash(key)])
+
+    def items(self):
+        """Yield (slot index, key, value) for every stored pair."""
+        for index, bucket in enumerate(self.arr):
+            for k, v in bucket:
+                yield index, k, v
+
+
 if __name__ == "__main__":
-    # Create a new hash table.
     t = HashTable()
-    # Add key-value pairs to the hash table.
     t["march 6"] = 130
     t["march 17"] = 20
-    
-    # Retrieve and print values from the hash table using their keys.
-    print(t["march 6"])   # Output: 130
-    print(t["march 17"])  # Output: 20
+    print(t["march 6"])   # 130
+    print(t["march 17"])  # 20
