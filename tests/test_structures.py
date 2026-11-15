@@ -56,3 +56,25 @@ def test_hash_table_update_delete_and_missing():
     assert "k" not in t
     with pytest.raises(KeyError):
         _ = t["k"]
+
+
+def test_tree_layout_places_children_either_side_of_parent():
+    from trees.binary_tree import BinaryTree, layout
+    t = BinaryTree()
+    for v in [50, 30, 70, 20]:
+        t.insert(v)
+    nodes, edges = layout(t)
+    pos = {v: (col, depth) for v, col, depth in nodes}
+    assert pos[50][1] == 0 and pos[30][1] == 1 and pos[20][1] == 2
+    assert pos[20][0] < pos[30][0] < pos[50][0] < pos[70][0]
+    names = [n[0] for n in nodes]
+    assert {(names[a], names[b]) for a, b in edges} == {(50, 30), (50, 70), (30, 20)}
+
+
+def test_graph_nodes_include_edge_targets():
+    from graphs.graph import Graph
+    g = Graph()
+    g.add_edge(0, 1)
+    g.add_edge(1, 4)
+    assert set(g.nodes()) == {0, 1, 4}
+    assert g.bfs(4) == [4]  # a node with no outgoing edges is still searchable

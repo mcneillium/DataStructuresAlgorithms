@@ -12,6 +12,15 @@ class Graph:
         """Add an edge from u to v."""
         self.graph[u].append(v)
 
+    def nodes(self):
+        """Every vertex, including those that only appear as an edge's target."""
+        seen = list(self.graph)
+        for targets in list(self.graph.values()):
+            for v in targets:
+                if v not in seen:
+                    seen.append(v)
+        return seen
+
     def bfs(self, start):
         """Return vertices in breadth-first order from start.
 

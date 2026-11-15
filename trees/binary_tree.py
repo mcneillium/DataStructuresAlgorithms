@@ -42,3 +42,29 @@ class BinaryTree:
             self._inorder_traversal(root.left, result)
             result.append(root.val)
             self._inorder_traversal(root.right, result)
+
+
+def layout(tree):
+    """Positions for drawing the tree.
+
+    Returns (nodes, edges): nodes is a list of (value, column, depth), where the
+    column is the node's place in in-order order, so a left child is always
+    drawn left of its parent; edges is a list of (parent index, child index)
+    into that list.
+    """
+    nodes, edges = [], []
+
+    def walk(node, depth):
+        if node is None:
+            return None
+        left = walk(node.left, depth + 1)
+        me = len(nodes)
+        nodes.append((node.val, me, depth))
+        right = walk(node.right, depth + 1)
+        for child in (left, right):
+            if child is not None:
+                edges.append((me, child))
+        return me
+
+    walk(tree.root, 0)
+    return nodes, edges
