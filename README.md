@@ -23,16 +23,19 @@ Case study: [paulmartinmcneill.com/projects/data-structures-python](https://paul
 
 ## Run it
 
-Python 3.10 or later. The code uses only the standard library; Tkinter ships
-with most Python installs (on Linux: `sudo apt install python3-tk`).
+You need [uv](https://docs.astral.sh/uv/), which fetches the right Python (3.13
+or later, with Tkinter included) and the development tools for you.
 
 ```bash
 git clone https://github.com/mcneillium/DataStructuresAlgorithms.git
 cd DataStructuresAlgorithms
-python main_gui.py        # opens the GUI
-pip install pytest
-python -m pytest -q       # runs the tests
+uv run main_gui.py        # opens the GUI
+uv run pytest             # runs the tests
+uv run mypy               # checks the types
 ```
+
+The code itself uses only the standard library, so `python main_gui.py` also
+works on any Python 3.13 or later that has Tkinter.
 
 ## Changes since the first version (November 2026)
 
@@ -57,6 +60,16 @@ python -m pytest -q       # runs the tests
 - BFS can **start from a node that only appears as an edge's target**; the
   GUI used to refuse it even though the algorithm handles it.
 - The hash table view groups keys by slot, so a collision is visible.
+
+### Third round (November 2026): current tooling
+
+- The three structures are **fully typed** with Python's newer generic syntax
+  (`class HashTable[K, V]`, `class BinaryTree[T: Comparable]`), and mypy checks
+  them in strict mode.
+- **uv** manages Python and the development tools from one `pyproject.toml`
+  and a lock file. **Ruff** lints and formats the code.
+- The tests, type check and lint run on **Python 3.13, 3.14 and 3.15** on
+  every push. Dependabot proposes updates once a month.
 
 ## Licence
 

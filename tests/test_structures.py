@@ -60,6 +60,7 @@ def test_hash_table_update_delete_and_missing():
 
 def test_tree_layout_places_children_either_side_of_parent():
     from trees.binary_tree import BinaryTree, layout
+
     t = BinaryTree()
     for v in [50, 30, 70, 20]:
         t.insert(v)
@@ -73,6 +74,7 @@ def test_tree_layout_places_children_either_side_of_parent():
 
 def test_graph_nodes_include_edge_targets():
     from graphs.graph import Graph
+
     g = Graph()
     g.add_edge(0, 1)
     g.add_edge(1, 4)
